@@ -1,0 +1,22 @@
+# .gitignore
+
+# Data and Processed Files
+data/
+processed/
+
+# Model Checkpoints
+checkpoints/
+
+# Python artifacts
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Results (keep local reports but ignore mass images)
+results/*.png
+results/*.jpg
+results/*.csv
+*.md
