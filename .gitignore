@@ -16,9 +16,6 @@ __pycache__/
 .idea/
 
 # Results (keep local reports but track showcase files)
-results/*
-!results/confusion_matrix.png
-!results/training_history.csv
-!results/final_report.txt
+
 *.pdf
 *.txt
