@@ -16,6 +16,3 @@ __pycache__/
 .idea/
 
 # Results (keep local reports but track showcase files)
-
-*.pdf
-*.txt

@@ -1,0 +1,14 @@
+
+    --- DIGITAL VIDEO FORENSICS REPORT ---
+    --------------------------------------
+    Model: CNN (ResNet) + LSTM (Temporal)
+    Dataset: FaceForensics++ C23
+    
+    FINAL METRICS:
+    ✅ Accuracy:  0.9923
+    ✅ Precision: 0.9960
+    ✅ Recall:    0.9951
+    ✅ F1 Score:  0.9955
+    
+    Evidence saved in: results/
+    

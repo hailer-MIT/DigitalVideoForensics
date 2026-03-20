@@ -71,14 +71,14 @@ Below are the findings from our latest forensic analysis.
 ### 📈 Confusion Matrix
 The following heatmap illustrates the model's performance in distinguishing between **Authentic** and **Tampered (Fake)** videos:
 
-![Forensic Confusion Matrix](results/confusion_matrix.png)
+![Forensic Confusion Matrix](results/confusion_matrix_.png)
 
 ### 📉 Training History
 You can view the full training loss progression over epochs here:
-[Download Training History (CSV)](results/training_history.csv)
+![Download Training History (CSV)](results/training_history_.csv)
 
 ### 📑 Summary Report
-Detailed metrics (Accuracy, Precision, Recall) can be found in the [Final Forensic Report](results/final_report.txt).
+Detailed metrics (Accuracy, Precision, Recall) can be found in the ![Final Forensic Report](results/final_report_.txt).
 
 ---
 *Developed for Digital Video Forensics *
