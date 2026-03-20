@@ -1,77 +1,91 @@
-import cv2
 import os
+import cv2
 import pandas as pd
 from tqdm import tqdm
+import sys
 
-def extract_frames(input_dir, output_dir, frames_per_video=30):
-    """
-    Extracts frames from videos and saves them into labeled subfolders.
-    input_dir: Path to directory with 'original' and 'fake' subfolders.
-    output_dir: Path to save processed images.
-    """
+# 🕵️ SMART PATH FINDER (Ensures brother folders can see each other)
+current_dir = os.path.dirname(os.path.abspath(__file__)) 
+root_dir = os.path.dirname(current_dir)
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
+def extract_frames(input_root='data/FaceForensics++_C23', output_dir='processed', frames_per_video=30):
     os.makedirs(output_dir, exist_ok=True)
     
     # Store frame paths and labels
     data_log = []
     
-    # Categories based on FaceForensics structure
-    categories = ['original', 'fake'] # Adjust based on actual folder names after download
+    # Define folders and their ground truth labels (0=Authentic, 1=Tampered)
+    categories = {
+        'original': 0,
+        'Deepfakes': 1,
+        'DeepFakeDetection': 1,
+        'Face2Face': 1,
+        'FaceShifter': 1,
+        'FaceSwap': 1,
+        'NeuralTextures': 1
+    }
     
-    for category in categories:
-        cat_input = os.path.join(input_dir, category)
-        cat_output = os.path.join(output_dir, category)
-        os.makedirs(cat_output, exist_ok=True)
-        
-        if not os.path.exists(cat_input):
-            print(f"Warning: Category folder {cat_input} not found. Skipping.")
+    print(f"🕵️ Starting Forensic Preprocessing on {input_root}...")
+    
+    for folder_name, label in categories.items():
+        folder_path = os.path.join(input_root, folder_name)
+        if not os.path.exists(folder_path):
+            print(f"⚠️ Warning: Folder '{folder_name}' not found. Skipping.")
             continue
             
-        videos = [f for f in os.listdir(cat_input) if f.endswith(('.mp4', '.avi'))]
-        print(f"🎥 Processing {len(videos)} videos in '{category}'...")
+        # Get list of videos
+        videos = [f for f in os.listdir(folder_path) if f.endswith(('.mp4', '.avi'))]
+        
+        # 🔥 Subset Limit: 100 per category to save time/space
+        videos = videos[:100] 
+        print(f"🎥 Processing {len(videos)} videos in '{folder_name}'...")
         
         for video_name in tqdm(videos):
-            video_path = os.path.join(cat_input, video_name)
+            video_path = os.path.join(folder_path, video_name)
             cap = cv2.VideoCapture(video_path)
             
             # Count total frames & calculate interval
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            if total_frames <= 0: continue
+            
             interval = max(1, total_frames // frames_per_video)
             
             count = 0
             saved_count = 0
-            
-            while cap.isOpened():
+            while cap.isOpened() and saved_count < frames_per_video:
                 ret, frame = cap.read()
-                if not ret:
-                    break
+                if not ret: break
                 
-                # Save frame at specific intervals
-                if count % interval == 0 and saved_count < frames_per_video:
-                    # Rename to avoid collisions
-                    frame_name = f"{video_name.split('.')[0]}_frame_{saved_count}.jpg"
-                    frame_path = os.path.join(cat_output, frame_name)
+                if count % interval == 0:
+                    base_name = video_name.split('.')[0]
+                    frame_name = f"{folder_name}_{base_name}_fr{saved_count}.jpg"
+                    frame_path = os.path.join(output_dir, frame_name)
                     
-                    # 1. Resize for CNN
+                    # 1. Resize for ResNet consistency
                     frame_resized = cv2.resize(frame, (224, 224))
                     
-                    # 2. Save
+                    # 2. Save image
                     cv2.imwrite(frame_path, frame_resized)
                     
                     # 3. Log data
-                    label = 0 if category == 'original' else 1
                     data_log.append({'path': frame_path, 'label': label})
-                    
                     saved_count += 1
-                
+                    
                 count += 1
             cap.release()
             
-    # Save the labels Cheat Sheet
-    df = pd.DataFrame(data_log)
-    df.to_csv('processed/labels.csv', index=False)
-    print(f"✅ Preprocessing complete. {len(data_log)} frames saved to processed/ folder.")
+    # Save the labels CSV
+    if data_log:
+        df = pd.DataFrame(data_log)
+        csv_path = os.path.join(output_dir, 'labels.csv')
+        df.to_csv(csv_path, index=False)
+        print(f"✅ Preprocessing complete! {len(data_log)} frames saved to '{output_dir}/'.")
+        print(f"📊 CSV file created: {csv_path}")
+    else:
+        print("❌ No frames were extracted! Check your data path paths or dataset content.")
 
 if __name__ == "__main__":
-    # We will run this after download_data.py
-    # data/original and data/fake are standard names
-    extract_frames(input_dir='data', output_dir='processed')
+    # Pointing to the specific folder structure found in your studio
+    extract_frames(input_root='data/FaceForensics++_C23', output_dir='processed')
