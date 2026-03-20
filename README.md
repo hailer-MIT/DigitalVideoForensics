@@ -75,10 +75,10 @@ The following heatmap illustrates the model's performance in distinguishing betw
 
 ### 📉 Training History
 You can view the full training loss progression over epochs here:
-![Download Training History (CSV)](results/training_history_.csv)
+[Download Training History (CSV)](results/training_history_.csv)
 
 ### 📑 Summary Report
-Detailed metrics (Accuracy, Precision, Recall) can be found in the ![Final Forensic Report](results/final_report_.txt).
+Detailed metrics (Accuracy, Precision, Recall) can be found in the [Final Forensic Report](results/final_report_.txt).
 
 ---
 *Developed for Digital Video Forensics *
