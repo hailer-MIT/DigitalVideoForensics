@@ -1,11 +1,13 @@
 # 📽️ Digital Video Forensics Project
 
-This project implements a **Video Tampering Detection Algorithm** designed to detect both spatial (frame-level) and temporal (sequence-level) manipulations.
+A high-performance **Video Tampering Detection System** using Deep Learning to identify spatial and temporal manipulations in digital video content.
 
 ## 🧬 Detection Strategy
-We use a **Dual Architecture** approach:
-1. **CNN (ResNet/EfficientNet)**: Detects spatial anomalies (Copy-move, splicing, deepfake texture).
-2. **LSTM/RNN layer**: Detects temporal anomalies (Frame deletion, insertion, speed changes).
+A **Dual-Stream Forensic Architecture**:
+1. **CNN (Spatial Layer)**: Analyzes individual frame textures, noise patterns, and artifacts using ResNet backbone to detect splicing and copy-move.
+2. **LSTM (Temporal Layer)**: Evaluates sequences of frames to identify temporal inconsistencies like frame deletion, insertion, or re-ordering.
+
+---
 
 ## 📁 Project Structure
 - `data/`: Raw original and tampered videos (e.g., from Kaggle).
@@ -15,24 +17,68 @@ We use a **Dual Architecture** approach:
 - `scripts/`: Utilities for preprocessing, training, and evaluation.
 - `results/`: Performance metrics (Accuracy, F1-Score) and visualization plots.
 
-## 🚀 Getting Started
+## 🚀 Step-by-Step Forensic Workflow
 
-### 1. Environment Setup
-Install the necessary dependencies using:
+Follow these steps to reproduce the training and evaluation process:
+
+### 1️⃣ Environment Setup
+Install the required libraries:
 ```bash
 pip install -r requirements.txt
 ```
-
-### 2. Verify Your Environment
-Run the check script to ensure your GPU is detected:
+Verify GPU acceleration:
 ```bash
 python check_env.py
 ```
 
-### 3. Workflow for Cloud (Lightning AI)
-1. Commit and push any code changes to your GitHub repository.
-2. Pull the repository on Lightning AI.
-3. Run the training script using a Cloud GPU for maximum speed!
+### 2️⃣ Data Acquisition
+Download the FaceForensics++ (C23) dataset:
+```bash
+python scripts/download_data.py
+```
+
+### 3️⃣ Frame Processing
+Extract frames from videos and generate labels for the AI:
+```bash
+python scripts/extract_frames.py
+```
+
+### 4️⃣ Model Training
+Train the Dual-Stream model on your local/cloud GPU:
+```bash
+python scripts/train_model.py
+```
+*Note: This generates `results/training_history.csv`.*
+
+### 5️⃣ Forensic Evaluation
+Run the evaluation suite to measure performance:
+```bash
+python scripts/evaluate_model.py
+```
+
+### 6️⃣ Live Prediction (Test on Random Video)
+Test the model on any video file:
+```bash
+python scripts/predict_video.py --video_path path/to/video.mp4
+```
 
 ---
-*Created for the Digital Video Forensics Training.*
+
+## 📊 Project Final Run Results
+
+Below are the findings from our latest forensic analysis.
+
+### 📈 Confusion Matrix
+The following heatmap illustrates the model's performance in distinguishing between **Authentic** and **Tampered (Fake)** videos:
+
+![Forensic Confusion Matrix](results/confusion_matrix.png)
+
+### 📉 Training History
+You can view the full training loss progression over epochs here:
+[Download Training History (CSV)](results/training_history.csv)
+
+### 📑 Summary Report
+Detailed metrics (Accuracy, Precision, Recall) can be found in the [Final Forensic Report](results/final_report.txt).
+
+---
+*Developed for Digital Video Forensics *
